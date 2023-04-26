@@ -2,12 +2,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='keepkey',
-    version='7.0.3',
-    author='TREZOR and KeepKey',
-    author_email='support@keepkey.com',
+    name='electrumsv-keepkey',
+    version='7.0.3.post1',
+    author='TREZOR and KeepKey and ElectrumSV',
+    author_email='roger.taylor.email@gmail.com',
     description='Python library for communicating with KeepKey Hardware Wallet',
-    url='https://github.com/keepkey/python-keepkey',
+    url='https://github.com/electrumsv/python-keepkey',
     packages=find_packages(exclude=['tests']),
     scripts = ['keepkeyctl'],
     test_suite='tests/**/test_*.py',
@@ -18,9 +18,6 @@ setup(
         'hidapi>=0.7.99.post15',
         'libusb1>=1.6'
     ],
-    extras_require={
-        "ethereum": ["rlp>=0.4.4", "ethjsonrpc>=0.3.0"],
-    },
     tests_require=[
         'semver==2.9.0'
     ],

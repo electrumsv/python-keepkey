@@ -3,12 +3,13 @@ import sys
 import math
 
 try:
-    from PyQt4.QtGui import (QPushButton, QLineEdit, QSizePolicy, QRegExpValidator, QLabel,
-                             QApplication, QWidget, QGridLayout, QVBoxLayout, QHBoxLayout)
-    from PyQt4.QtCore import QObject, SIGNAL, QRegExp, Qt, QT_VERSION_STR
+    from PyQt6.QtWidgets import (QPushButton, QLineEdit, QSizePolicy, QLabel,
+        QApplication, QWidget, QGridLayout, QVBoxLayout, QHBoxLayout)
+    from PyQt6.QtGui import QRegularExpressionValidator
+    from PyQt6.QtCore import QRegularExpression, Qt, QT_VERSION_STR
 except:
     from PyQt5.QtWidgets import (QPushButton, QLineEdit, QSizePolicy, QLabel,
-                                 QApplication, QWidget, QGridLayout, QVBoxLayout, QHBoxLayout)
+        QApplication, QWidget, QGridLayout, QVBoxLayout, QHBoxLayout)
     from PyQt5.QtGui import QRegExpValidator
     from PyQt5.QtCore import QRegExp, Qt, QT_VERSION_STR
 
@@ -19,12 +20,7 @@ class PinButton(QPushButton):
         self.password = password
         self.encoded_value = encoded_value
 
-        if QT_VERSION_STR >= '5':
-            self.clicked.connect(self._pressed)
-        elif QT_VERSION_STR >= '4':
-            QObject.connect(self, SIGNAL('clicked()'), self._pressed)
-        else:
-            raise Exception('Unsupported Qt version')
+        self.clicked.connect(self._pressed)
 
     def _pressed(self):
         self.password.setText(self.password.text() + str(self.encoded_value))
@@ -43,16 +39,18 @@ class PinMatrixWidget(QWidget):
         super(PinMatrixWidget, self).__init__(parent)
 
         self.password = QLineEdit()
-        self.password.setValidator(QRegExpValidator(QRegExp('[1-9]+'), None))
-        self.password.setEchoMode(QLineEdit.Password)
 
-        if QT_VERSION_STR >= '5':
-            self.password.textChanged.connect(self._password_changed)
-        elif QT_VERSION_STR >= '4':
-            QObject.connect(self.password, SIGNAL('textChanged(QString)'), self._password_changed)
+        if QT_VERSION_STR >= '6':
+            self.password.setValidator(QRegularExpressionValidator(QRegularExpression('[1-9]+'),
+                None))
+            self.password.setEchoMode(QLineEdit.EchoMode.Password)
+        elif QT_VERSION_STR >= '5':
+            self.password.setValidator(QRegExpValidator(QRegExp('[1-9]+'), None))
+            self.password.setEchoMode(QLineEdit.Password)
         else:
             raise Exception('Unsupported Qt version')
 
+        self.password.textChanged.connect(self._password_changed)
         self.strength = QLabel()
         self.strength.setMinimumWidth(75)
         self.strength.setAlignment(Qt.AlignCenter)
@@ -117,12 +115,7 @@ if __name__ == '__main__':
         sys.exit()
 
     ok = QPushButton('OK')
-    if QT_VERSION_STR >= '5':
-        ok.clicked.connect(clicked)
-    elif QT_VERSION_STR >= '4':
-        QObject.connect(ok, SIGNAL('clicked()'), clicked)
-    else:
-        raise Exception('Unsupported Qt version')
+    ok.clicked.connect(clicked)
 
     vbox = QVBoxLayout()
     vbox.addWidget(matrix)
