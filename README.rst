@@ -1,8 +1,27 @@
 .. image:: https://circleci.com/gh/keepkey/python-keepkey.svg?style=svg
     :target: https://circleci.com/gh/keepkey/python-keepkey
 
-python-keepkey
-==============
+electrumsv-keepkey
+==================
+
+ElectrumSV note
+---------------
+
+We were using 6.1.0 from PyPI. Shapeshift bought Keepkey and do not own or update
+that package. Support requests gave the response that we should use the Github
+repository.
+
+I (rt121212121) chose the following commit which has a setup.py version of 7.0.3. It turns out
+that Keepkey do not update setup.py for their tagged updates:
+
+  [Merge pull request #134 from keepkey/remove-mx](https://github.com/keepkey/python-keepkey/commit/295af27b316330e49c748b2a6918e550c6282761)
+  
+It turns out that this commit has issues with USB on MacOS that the package version 6.1.0
+does not. So our solution as of this branch, is to take the source code of the 6.1.0 package
+and commit it and release that with the Qt fixes. Then pin our releases to it.
+
+python-keepkey introduction
+---------------------------
 
 Client side implementation for KeepKey-compatible Bitcoin hardware wallets.
 
@@ -107,3 +126,14 @@ To run unit tests that don't require a device:
 .. code:: shell
 
     $ python tests/unit/*.py
+
+Release Process
+---------------
+
+* Check that the testsuite runs cleanly
+* Bump the version in setup.py
+* Tag the release
+* Build the release
+  * sudo python3 setup.py sdist bdist_wheel bdist_egg
+* Upload the release
+  * sudo python3 -m twine upload dist/* -s --sign-with gpg2
